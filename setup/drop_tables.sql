@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS `labour_item`;
+DROP TABLE IF EXISTS `position`;
+DROP TABLE IF EXISTS `staff`;
+DROP TABLE IF EXISTS `truck_item`;
+DROP TABLE IF EXISTS `truck`;
+DROP TABLE IF EXISTS `misc_item`;
+DROP TABLE IF EXISTS `project`;
+DROP TABLE IF EXISTS `ticket`;
+DROP TABLE IF EXISTS `job_location`;
+DROP TABLE IF EXISTS `job`;
+DROP TABLE IF EXISTS `location`;
+DROP TABLE IF EXISTS `customer`;
