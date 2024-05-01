@@ -1,5 +1,5 @@
 <?php
-require_once(realpath(__DIR__ . "/../../config/db.config.php"));
+require_once __DIR__ . "/../../config/db.config.php";
 
 class Database {
     private $connection;
