@@ -21,9 +21,7 @@
         // Project Section
         require_once __DIR__ . "/../src/Controller/ProjectController.php";
         $projectController = new ProjectController();
-        $customers = $projectController->getCustomers();
-        $jobs = $projectController->getJobs();
-        $locations = $projectController->getLocations();
+        $projectData = $projectController->initProjectData();
         include_once __DIR__ . "/../src/View/ProjectView.php";
 
         // Description of Work Section
@@ -33,6 +31,9 @@
         include __DIR__ . "/../src/View/LabourView.php";
 
         // Truck Section
+        require_once __DIR__ . "/../src/Controller/TruckController.php";
+        $truckController = new TruckController();
+        $trucks = $truckController->getTrucks();
         include __DIR__ . "/../src/View/TruckView.php";
         
         // Miscellaneous Section

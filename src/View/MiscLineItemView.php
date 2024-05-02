@@ -17,6 +17,6 @@
     </div>
     <div class="input-wrapper vertical">
         <label for="misc-total">Total</label>
-        <input type="text" id="misc-total" name="misc-total" readonly class="readonly"/>
+        <input type="text" id="misc-total" class="misc-total" name="misc-total" readonly class="readonly"/>
     </div>
 </div>

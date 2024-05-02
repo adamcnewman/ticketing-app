@@ -6,7 +6,7 @@
                 <label for="customer-name">Customer Name:</label>
                 <select id="customer-name" name="customer-name">
                     <option value="" readonly selected class="readonly">Select Customer...</option>
-                    <?php foreach ($customers as $customer): ?>
+                    <?php foreach ($projectData["customers"] as $customer): ?>
                         <option value="<?= htmlspecialchars($customer["customer_id"]); ?>">
                             <?= htmlspecialchars($customer["name"]); ?>
                         </option>
@@ -17,7 +17,7 @@
                 <label for="job-name">Job Name:</label>
                 <select id="job-name" name="job-name">
                     <option value="" readonly selected class="readonly">Select Job...</option>
-                    <?php foreach ($jobs as $job): ?>
+                    <?php foreach ($projectData["jobs"] as $job): ?>
                         <option value="<?= htmlspecialchars($job["job_id"]); ?>" data-customer="<?= htmlspecialchars($job["customer_id"])?>">
                             <?= htmlspecialchars($job["name"]); ?>
                         </option>
@@ -37,8 +37,8 @@
                 <label for="location">Location/LSD:</label>
                 <select id="location" name="location">
                     <option value="" readonly selected class="readonly">Select LSD...</option>
-                    <?php foreach ($locations as $location): ?>
-                        <option value="<?= htmlspecialchars($location["location_id"]); ?>" data-job="<?= htmlspecialchars($location["job_id"])?>">
+                    <?php foreach ($projectData["locations"] as $location): ?>
+                        <option value="<?= htmlspecialchars($location["location_id"]); ?>" data-job="<?= htmlspecialchars($location["location_id"])?>">
                             <?= htmlspecialchars($location["name"]); ?>
                         </option>
                     <?php endforeach; ?>

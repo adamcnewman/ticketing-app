@@ -6,7 +6,7 @@
         <textarea id="tinymce" name="tinymce">&lt;p&gt;&lt;/p&gt;</textarea>
     </div>
     <script>
-      $('textarea#tiny').tinymce({
+      $('textarea#tinymce').tinymce({
         height: 250,
         menubar: false,
         plugins: [
