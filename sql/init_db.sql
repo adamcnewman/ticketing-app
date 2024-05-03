@@ -249,10 +249,10 @@ VALUES  (1, "Engineer-Junior"),
         (1, "Engineer-Intermediate"),
         (1, "Engineer-Senior"),
         (1, "Designer"),
-        (2, "Engineer-Junior"),
-        (2, "Engineer-Intermediate"),
-        (2, "Engineer-Senior"),
-        (2, "Designer");
+        (2, "Web Developer-Junior"),
+        (2, "Web Developer-Intermediate"),
+        (2, "Web Developer-Senior"),
+        (2, "Web Designer");
 
 -- position_rate
 INSERT INTO `position_rate` (`position_id`, `uom`, `regular_rate`, `overtime_rate`)

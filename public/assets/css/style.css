@@ -73,7 +73,7 @@ button {
     padding: 4px 16px;
 }
 
-.readonly {
+input[readonly] {
     background-color: var(--background-color-secondary);
 }
 

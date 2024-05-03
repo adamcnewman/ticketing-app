@@ -6,7 +6,7 @@
         </div>
         <div class="subtotal container">
             <label for="misc-subtotal">Sub-Total</label>
-            <input type="text" id="misc-subtotal" name="misc-subtotal" readonly class="readonly"/>
+            <input type="text" id="misc-subtotal" name="misc-subtotal" readonly/>
         </div>
     </div>
 </div>

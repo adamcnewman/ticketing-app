@@ -8,7 +8,7 @@ class TruckController {
         $this->truckModel = new TruckModel();
     }
 
-    public function getTrucks() {
+    public function initTruckData() {
         $trucks = $this->truckModel->getTrucks();
         return $trucks;
     }

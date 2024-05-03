@@ -8,8 +8,8 @@
     <script src="https://cdn.tiny.cloud/1/eaq3tqh0gtcu2g4zqwj8d0r8q07m615oaxddq98hnhaucd3h/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tinymce/tinymce-jquery@2/dist/tinymce-jquery.min.js"></script>
 
-    <script src="./js/script.js" ></script>
-    <link rel="stylesheet" href="./css/style.css"></link>
+    <script src="./assets/js/script.js" ></script>
+    <link rel="stylesheet" href="./assets/css/style.css"></link>
     <title>Ticketing App</title>
 </head>
 <body>
@@ -19,9 +19,6 @@
     <form class="container">
         <?php 
         // Project Section
-        require_once __DIR__ . "/../src/Controller/ProjectController.php";
-        $projectController = new ProjectController();
-        $projectData = $projectController->initProjectData();
         include_once __DIR__ . "/../src/View/ProjectView.php";
 
         // Description of Work Section
@@ -31,11 +28,8 @@
         include __DIR__ . "/../src/View/LabourView.php";
 
         // Truck Section
-        require_once __DIR__ . "/../src/Controller/TruckController.php";
-        $truckController = new TruckController();
-        $trucks = $truckController->getTrucks();
         include __DIR__ . "/../src/View/TruckView.php";
-        
+
         // Miscellaneous Section
         include __DIR__ . "/../src/View/MiscView.php" ;
         ?>
