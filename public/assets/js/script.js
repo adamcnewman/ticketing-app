@@ -60,67 +60,145 @@ $(document).ready(function() {
     /**
      * Gets the positions when staff dropdown is selected.
      */
-    $(document).on("change", "#staff-dropdown", function() {
-        if ($("#staff-dropdown").val()) {
+    $(document).on("change", "#labour .staff-dropdown", function() {
+        lineItem = $(this).closest(".line-item.container");
+        var staffVal = lineItem.find(".staff-dropdown").val();
+        if (staffVal) {
             $.ajax({
                 url: "assets/handler.php",
                 type: "POST",
                 data: {
                     action: "get_staff_positions",
-                    staff_id: $("#staff-dropdown").val()
+                    staff_id: staffVal
                 },
                 success: function(data) {
                     var jsonData = JSON.parse(data);
                     var positionData = jsonData.positions;
-                    // Clear any previous options, if any were present
-                    $("#position-dropdown").html("<option value='' selected>Select Position...</option>");
+                    // Clear any previous position options, if any were present
+                    lineItem.find(".position-dropdown").html("<option value='' selected>Select Position...</option>");
+                    // Populate the dropdown with the staff's positions
                     for (var i = 0; i < positionData.length; i++) {
                         var position = positionData[i];
-                        $("#position-dropdown").append("<option value='" + position.position_id + "'>" + position.title + "</option>");
+                        lineItem.find(".position-dropdown").append("<option value='" + position.position_id + "'>" + position.title + "</option>");
                     }
                     // Reset the Position and UOM dropdowns, and regular/overtime rates
-                    $("#position-dropdown").val("");
-                    $("#labour-uom").val("");
-                    $("#labour-regular-rate").val("");
-                    $("#labour-overtime-rate").val("");
+                    lineItem.find(".position-dropdown").val("");
+                    lineItem.find(".labour-uom").val("");
+                    lineItem.find(".labour-regular-rate").val("");
+                    lineItem.find(".labour-overtime-rate").val("");
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error("AJAX request failed: ", jqXHR, textStatus, errorThrown);
                 }
             });
         } else {
-            $("#position-dropdown").html("<option value=''>Select Position... </option>");
-            $("#labour-uom").val("");
-            $("#labour-regular-rate").val("");
-            $("#labour-overtime-rate").val("");
+            lineItem.find(".position-dropdown").html("<option value=''>Select Position... </option>");
+            lineItem.find(".labour-uom").val("");
+            lineItem.find(".labour-regular-rate").val("");
+            lineItem.find(".labour-overtime-rate").val("");
         }
     });
 
-    $(document).on("change", "#position-dropdown, #labour-uom", function() {
-        if ($("#position-dropdown").val() && $("#labour-uom").val()) {
+    /**
+     * Gets the rates of the staff's position when position and UOM dropdowns are selected.
+     */
+    $(document).on("change", "#labour .position-dropdown, #labour .labour-uom", function() {
+        var lineItem = $(this).closest(".line-item.container");
+        var positionVal = lineItem.find(".position-dropdown").val();
+        var uomVal = lineItem.find(".labour-uom").val();
+        if (positionVal, uomVal) {
             $.ajax({
                 url: "assets/handler.php",
                 type: "POST",
                 data: {
                     action: "get_position_rates",
-                    position_id: $("#position-dropdown").val(),
-                    uom: $("#labour-uom").val()
+                    position_id: positionVal,
+                    uom: uomVal
                 },
                 success: function(data) {
                     var jsonData = JSON.parse(data);
                     var regularRate = jsonData.regular_rate;
                     var overtimeRate = jsonData.overtime_rate; 
-                    $("#labour-regular-rate").val(regularRate);
-                    $("#labour-overtime-rate").val(overtimeRate);
-                    // calculateLabourItemTotal();
+                    lineItem.find(".labour-regular-rate").val(regularRate);
+                    lineItem.find(".labour-overtime-rate").val(overtimeRate);
+                    calculateLabourTotal();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error("AJAX request failed: ", jqXHR, textStatus, errorThrown);
                 }
             });
         } else {
-            $("#labour-regular-rate").val("");
-            $("#labour-overtime-rate").val("");
+            lineItem.find(".labour-regular-rate").val("");
+            lineItem.find(".labour-overtime-rate").val("");
+        }
+    });
+
+    $(document).on("input", "#labour .labour-regular-hours, #labour .labour-overtime-hours", function() {
+        calculateLabourTotal();
+    });
+
+    /**
+     * Calculates the total cost of the labour line item based on the rates and hours.
+     * If a line item uses a fixed rate, the fixed rate gets added to the labour subtotal without
+     * consideration of the hours.
+     * If a line item uses a regular/overtime rate, the line item's total is calculated 
+     * based on the ovetime & regular hours / rates.
+     */
+    function calculateLabourTotal() {
+        var subtotal = 0;
+        $("#labour .line-item.container").each(function() {
+            var lineItem = $(this);
+            var staff = lineItem.find(".staff-dropdown").val();
+            var position = lineItem.find(".position-dropdown").val();
+            var uom = lineItem.find(".labour-uom").val();
+            var regularRate = lineItem.find(".labour-regular-rate").val();
+            var regularHours = lineItem.find(".labour-regular-hours").val();
+            var overtimeRate = lineItem.find(".labour-overtime-rate").val();
+            var overtimeHours = lineItem.find(".labour-overtime-hours").val();
+            if (staff && position && uom) {
+                if (uom == "Fixed") {
+                    var fixedRate = parseFloat(regularRate);
+                    if (!isNaN(fixedRate)) {
+                        subtotal += fixedRate;
+                }
+            } else if (uom== "Hourly") {
+                var regularTotal = (parseFloat(regularRate).toFixed(2) * parseFloat(regularHours).toFixed(2));
+                var overtimeTotal = (parseFloat(overtimeRate).toFixed(2) * parseFloat(overtimeHours).toFixed(2));
+                if (!isNaN(regularTotal)) {
+                    subtotal += regularTotal;
+                }
+                if (!isNaN(overtimeTotal)) {
+                    subtotal += overtimeTotal;
+                }
+            }
+            
+            if (!isNaN(subtotal) || subtotal == 0.00) {
+                // Set the subtotal
+                $("#labour-subtotal").val(subtotal.toFixed(2));
+            } else {
+                $("#labour-subtotal").val("");
+            }
+            }
+        });
+    }
+
+    /**
+     * Adds a new line item to labour section.
+     */
+        $(document).on("click", "#labour .add-line-item", function() {
+            var newItem = $("#labour .line-item.container").first().clone();
+            newItem.find("input").val(""); // Clear the values in the cloned inputs
+            newItem.find(".position-dropdown").html("<option value=''>Select Position... </option>");
+            $("#labour .line-items.container").append(newItem);
+        });
+    
+    /**
+     * Removes the labour line item and recalculates the labour subtotal.
+     */ 
+    $(document).on("click", "#labour .remove-line-item", function() {
+        if ($("#labour .line-item.container").length > 1) { // Ensure at least one line item remains
+            $(this).closest("#labour .line-item.container").remove();
+            calculateLabourTotal(); // Recalculate total after removal
         }
     });
 
@@ -187,7 +265,6 @@ $(document).ready(function() {
         });
         if (subtotal.toFixed(2) == 0.00) {
             // Clear the subtotal if it's 0
-            console.log(subtotal.toFixed(2));
             $("#truck-subtotal").val("") 
         }
         else {
@@ -252,6 +329,7 @@ $(document).ready(function() {
             $("#misc-subtotal").val(subtotal.toFixed(2));
         }
     }
+
     /**
      * Adds a new line item to misc section.
      */

@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `project` (
     `status` ENUM("Pending", "Active", "Closed") NOT NULL,
     `ordered_by` VARCHAR(64),
     `area` VARCHAR(64),
-    `date` DATE DEFAULT CURRENT_DATE,
+    `date` DATE NOT NULL,
     PRIMARY KEY (`project_id`),
     FOREIGN KEY (`ticket_id`) REFERENCES `ticket`(`ticket_id`),
     FOREIGN KEY (`customer_id`) REFERENCES `customer`(`customer_id`),
@@ -224,12 +224,12 @@ VALUES  ("200 - Tesla Truck"),
 
 -- truck_rate
 INSERT INTO `truck_rate` (`truck_id`, `uom`, `rate`)
-VALUES  (1, "Hourly", 90.50),
-        (1, "Fixed", 200.00),
-        (2, "Hourly", 100.25),
-        (2, "Fixed", 360.00),
-        (3, "Hourly", 125.25),
-        (3, "Fixed", 500.00);
+VALUES  (1, "Hourly", 90.55),
+        (1, "Fixed", 200.39),
+        (2, "Hourly", 100.27),
+        (2, "Fixed", 360.10),
+        (3, "Hourly", 125.29),
+        (3, "Fixed", 500.50);
 
 -- truck_item
 
@@ -256,21 +256,21 @@ VALUES  (1, "Engineer-Junior"),
 
 -- position_rate
 INSERT INTO `position_rate` (`position_id`, `uom`, `regular_rate`, `overtime_rate`)
-VALUES  (1, "Hourly", 30.00, 45.00),
-        (1, "Fixed", 1500.00, NULL),
-        (2, "Hourly", 40.00, 60.00),
-        (2, "Fixed", 2000.00, NULL),
-        (3, "Hourly", 60.00, 90.00),
-        (3, "Fixed", 2500.00, NULL),
-        (4, "Hourly", 35.00, 47.00),
-        (4, "Fixed", 1800.00, NULL),
-        (5, "Hourly", 32.00, 48.00),
-        (5, "Fixed", 1900.00, NULL),
-        (6, "Hourly", 37.00, 55.00),
-        (6, "Fixed", 2300.00, NULL),
-        (7, "Hourly", 54.00, 85.00),
-        (7, "Fixed", 2800.00, NULL),
-        (8, "Hourly", 28.00, 43.00),
-        (8, "Fixed", 1400.00, NULL);
+VALUES  (1, "Hourly", 30.12, 45.13),
+        (1, "Fixed", 1500.11, NULL),
+        (2, "Hourly", 40.43, 60.45),
+        (2, "Fixed", 2000.22, NULL),
+        (3, "Hourly", 60.23, 90.64),
+        (3, "Fixed", 2500.45, NULL),
+        (4, "Hourly", 35.65, 47.23),
+        (4, "Fixed", 1800.76, NULL),
+        (5, "Hourly", 32.54, 48.12),
+        (5, "Fixed", 1900.87, NULL),
+        (6, "Hourly", 37.12, 55.54),
+        (6, "Fixed", 2300.33, NULL),
+        (7, "Hourly", 54.54, 85.12),
+        (7, "Fixed", 2800.23, NULL),
+        (8, "Hourly", 28.12, 43.12),
+        (8, "Fixed", 1400.23, NULL);
 
 -- labour_item
