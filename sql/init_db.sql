@@ -31,21 +31,21 @@ CREATE TABLE IF NOT EXISTS `ticket` (
 
 CREATE TABLE IF NOT EXISTS `customer` (
     `customer_id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
-    `name` VARCHAR(64),
+    `name` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`customer_id`)
 ) ENGINE=InnoDB CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `job` (
     `job_id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
     `customer_id` BIGINT UNSIGNED NOT NULL,
-    `name` VARCHAR(64),
+    `name` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`job_id`),
     FOREIGN KEY (`customer_id`) REFERENCES `customer`(`customer_id`)
 ) ENGINE=InnoDB CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `location` (
     `location_id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
-    `name` VARCHAR(64),
+    `name` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`location_id`)
 ) ENGINE=InnoDB CHARACTER SET utf8;
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `project` (
     `status` ENUM("Pending", "Active", "Closed") NOT NULL,
     `ordered_by` VARCHAR(64),
     `area` VARCHAR(64),
-    `date` DATE,
+    `date` DATE DEFAULT CURRENT_DATE,
     PRIMARY KEY (`project_id`),
     FOREIGN KEY (`ticket_id`) REFERENCES `ticket`(`ticket_id`),
     FOREIGN KEY (`customer_id`) REFERENCES `customer`(`customer_id`),
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `project` (
 
 CREATE TABLE IF NOT EXISTS `truck` (
     `truck_id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
-    `label` VARCHAR(64),
+    `label` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`truck_id`)
 ) ENGINE=InnoDB CHARACTER SET utf8;
 
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `truck_rate` (
     `truck_rate_id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
     `truck_id` BIGINT UNSIGNED NOT NULL,
     `uom` ENUM("Hourly", "Fixed") NOT NULL,
-    `rate` DECIMAL(10,2) UNSIGNED,
+    `rate` DECIMAL(10,2) UNSIGNED NOT NULL,
     PRIMARY KEY (`truck_rate_id`),
     FOREIGN KEY (`truck_id`) REFERENCES `truck`(`truck_id`)
 ) ENGINE=InnoDB CHARACTER SET utf8;
@@ -94,10 +94,10 @@ CREATE TABLE IF NOT EXISTS `truck_item` (
     `truck_item_id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
     `truck_id` BIGINT UNSIGNED NOT NULL,
     `ticket_id` BIGINT UNSIGNED NOT NULL,
-    `quantity` BIGINT UNSIGNED,
+    `quantity` BIGINT UNSIGNED NOT NULL,
     `uom` ENUM("Hourly", "Fixed") NOT NULL,
-    `rate` DECIMAL(10,2) UNSIGNED,
-    `total` DECIMAL(10,2) UNSIGNED,
+    `rate` DECIMAL(10,2) UNSIGNED NOT NULL,
+    `total` DECIMAL(10,2) UNSIGNED NOT NULL,
     PRIMARY KEY (`truck_item_id`),
     FOREIGN KEY (`truck_id`) REFERENCES `truck`(`truck_id`),
     FOREIGN KEY (`ticket_id`) REFERENCES `ticket`(`ticket_id`)
@@ -108,9 +108,9 @@ CREATE TABLE IF NOT EXISTS `misc_item` (
     `ticket_id` BIGINT UNSIGNED NOT NULL,
     `description` TEXT,
     `cost` DECIMAL(10,2) UNSIGNED,
-    `price` DECIMAL(10,2) UNSIGNED,
-    `quantity` DECIMAL(10,2) UNSIGNED,
-    `total` DECIMAL(10,2) UNSIGNED,
+    `price` DECIMAL(10,2) UNSIGNED NOT NULL,
+    `quantity` DECIMAL(10,2) UNSIGNED NOT NULL,
+    `total` DECIMAL(10,2) UNSIGNED NOT NULL,
     PRIMARY KEY (`misc_item_id`),
     FOREIGN KEY (`ticket_id`) REFERENCES `ticket`(`ticket_id`)
 ) ENGINE=InnoDB CHARACTER SET utf8;

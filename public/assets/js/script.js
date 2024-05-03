@@ -127,54 +127,91 @@ $(document).ready(function() {
 
     /***** TRUCK *****/ 
     /**
-     * Calculates the total cost of the truck item based on the quantity and rate.
-     */
-    function calculateTruckItemTotal() {
-        if ($("#truck-quantity").val() && $("#truck-rate").val()) {
-            var quantity = $("#truck-quantity").val();
-            var rate = $("#truck-rate").val();
-            var total = (quantity * rate).toFixed(2);
-            $("#truck-total").val(total);
-        } else {
-            $("#truck-total").val("");
-        }
-    }
-
-    /**
-     * Triggers calculateTruckItemTotal() when the quantity input changes.
-     */
-    $(document).on("input", "#truck-quantity", function() {
-        if ($("#truck-quantity").val()) {
-            calculateTruckItemTotal();
-        } else {
-            $("#truck-total").val("");
-        };
-    });
-
-    /**
      * Get the rate of the selected truck & uom when the dropdown selections change.
      */ 
-    $(document).on("change", "#truck-label-dropdown, #truck-uom-dropdown", function() {
-        if ($("#truck-label-dropdown").val() && $("#truck-uom-dropdown").val()) {
+    $(document).on("change", "#truck .truck-label-dropdown, #truck .truck-uom-dropdown", function() {
+        var lineItem = $(this).closest(".line-item.container");
+        var labelVal = lineItem.find(".truck-label-dropdown").val();
+        var uomVal = lineItem.find(".truck-uom-dropdown").val();
+        if (labelVal && uomVal) {
             $.ajax({
                 url: "assets/handler.php",
                 type: "POST",
                 data: {
                     action: "get_truck_rate",
-                    truck_id: $("#truck-label-dropdown").val(),
-                    uom: $("#truck-uom-dropdown").val()
+                    truck_id: labelVal,
+                    uom: uomVal
                 },
                 success: function(data) {
-                    $("#truck-rate").val(data);
-                    calculateTruckItemTotal();
+                    var rate = data;
+                    lineItem.find(".truck-rate").val(rate);
+                    lineItem.find(".truck-total").val((lineItem.find(".truck-quantity").val() * rate).toFixed(2));
+                    calculateTruckSubtotal();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error("AJAX request failed: ", jqXHR, textStatus, errorThrown);
                 }
             });
         } else {
-            $("#truck-rate").val("");
-            $("#truck-total").val("");
+            lineItem.find(".truck-rate").val("");
+            lineItem.find(".truck-total").val("");
+        }
+    });
+
+    /**
+     * Calculates a truck line item's total and recalculates the subtotal when its quantity changes.
+     */
+    $(document).on("input", "#truck .truck-quantity", function() {
+        lineItem = $(this).closest(".line-item.container");
+        var label = lineItem.find(".truck-label-dropdown").val();
+        var quantity = lineItem.find(".truck-quantity").val();
+        var rate = lineItem.find(".truck-rate").val();
+        if (quantity && rate && label) {
+            lineItem.find(".truck-total").val((quantity * rate).toFixed(2));
+        } else {
+            lineItem.find(".truck-total").val("");
+        };
+        calculateTruckSubtotal();
+    });
+
+    /**
+     * Calculates the total cost of all truck items and updates the truck subtotal.
+     */
+    function calculateTruckSubtotal() {
+        var subtotal = 0;
+        $(".truck-total").each(function() {
+            var value = parseFloat($(this).val());
+            if (!isNaN(value)) {
+                subtotal += value;
+            }
+        });
+        if (subtotal.toFixed(2) == 0.00) {
+            // Clear the subtotal if it's 0
+            console.log(subtotal.toFixed(2));
+            $("#truck-subtotal").val("") 
+        }
+        else {
+            // Set the subtotal
+            $("#truck-subtotal").val(subtotal.toFixed(2));
+        }
+    }
+
+    /**
+     * Adds a new line item to truck section.
+     */
+    $(document).on("click", "#truck .add-line-item", function() {
+        var newItem = $("#truck .line-item.container").first().clone();
+        newItem.find("input").val(""); // Clear the values in the cloned inputs
+        $("#truck .line-items.container").append(newItem);
+    });
+    
+    /**
+     * Removes the truck line item and recalculates the truck subtotal.
+     */ 
+    $(document).on("click", "#truck .remove-line-item", function() {
+        if ($("#truck .line-item.container").length > 1) { // Ensure at least one line item remains
+            $(this).closest("#truck .line-item.container").remove();
+            calculateTruckSubtotal(); // Recalculate subtotal after removal
         }
     });
 
@@ -188,14 +225,15 @@ $(document).ready(function() {
         var quantity = lineItem.find(".misc-quantity").val();
         if (price && quantity) {
             var total = (price * quantity).toFixed(2);
-            console.log(total);
             lineItem.find(".misc-total").val(total);
-            calculateMiscSubtotal();
+        } else {
+            lineItem.find(".misc-total").val("");
         }
+        calculateMiscSubtotal();
     });
 
     /**
-     * Calculates the total cost of all miscellaneous items and update the subtotal.
+     * Calculates the total cost of all miscellaneous items and updates the misc subtotal.
      */
     function calculateMiscSubtotal() {
         var subtotal = 0;
@@ -205,9 +243,15 @@ $(document).ready(function() {
                 subtotal += value;
             }
         });
-        $("#misc-subtotal").val(subtotal.toFixed(2));
+        if (subtotal.toFixed(2) == 0) {
+            // Clear the subtotal if it's 0
+            $("#misc-subtotal").val("") 
+        }
+        else {
+            // Set the subtotal
+            $("#misc-subtotal").val(subtotal.toFixed(2));
+        }
     }
-
     /**
      * Adds a new line item to misc section.
      */
