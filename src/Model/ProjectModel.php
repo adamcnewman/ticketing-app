@@ -5,7 +5,7 @@ class ProjectModel {
     private $db;
 
     public function __construct() {
-        $this->db = (new Database())->getConnection();
+        $this->db = Database::getConnection();
     }
 
     public function getCustomers() {
