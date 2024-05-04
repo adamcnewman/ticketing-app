@@ -33,6 +33,8 @@ $(document).ready(function() {
                 var location = projectData.locations[i];
                 $("#location-dropdown").append("<option value='" + location.location_id + "'>" + location.name + "</option>");
             }
+            // Set the default date
+            setDefaultDate();
 
             /* Labour Section */
             /* Populate the staff dropdown */
@@ -55,6 +57,86 @@ $(document).ready(function() {
         }
     });
 
+    /**
+     * Gets the default date in yyyy-mm-dd format and sets it as the value for the project date input.
+     */
+    function setDefaultDate() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; // Add 1 because January is 0
+        var yyyy = today.getFullYear();
+        if(dd<10) {
+            dd = "0" + dd // Add leading zero to single digit day
+        }
+        if(mm<10) {
+            mm = "0" + mm // Add leading zero to single digit month
+        }
+        today = yyyy + "-" + mm + "-" + dd;
+        $("#date").val(today);
+    }
+
+    /***** PROJECT *****/
+    /**
+     * When customer, job, or location dropdowns are changed, queries database for filtered dropdown data,
+     * then updates the dropdowns accordingly.
+     */
+    $(document).on("change", "#customer-dropdown, #job-dropdown, #location-dropdown", function() {
+        var customerVal = $("#customer-dropdown").val();
+        var jobVal = $("#job-dropdown").val();
+        var locationVal = $("#location-dropdown").val();
+        $.ajax({
+            url: "assets/handler.php",
+            type: "POST",
+            data: {
+                action: "get_project_dropdown_data",
+                customer_id: customerVal,
+                job_id: jobVal,
+                location_id: locationVal
+            },
+            success: function(data) {
+                var jsonData = JSON.parse(data);
+                var customerData = jsonData.customers;
+                var jobData = jsonData.jobs;
+                var locationData = jsonData.locations;
+                
+                // Populate the customers dropdown
+                if (!customerVal) { 
+                    // If the dropdown is not selected, clear it and repopulate it with updated options
+                    $("#customer-dropdown").html("<option value='' selected>Select Customer...</option>");
+                    for (var i = 0; i < customerData.length; i++) {
+                        console.log(customerData[i]);
+                        var customer = customerData[i];
+                        $("#customer-dropdown").append("<option value='" + customer.customer_id + "'>" + customer.customer_name + "</option>");
+                    }
+                }
+
+                // Populate the jobs dropdown
+                if (!jobVal) { 
+                    // If the dropdown is not selected, clear it and repopulate it with updated options
+                    $("#job-dropdown").html("<option value='' selected>Select Job...</option>");
+                    for (var i = 0; i < jobData.length; i++) {
+                        console.log(jobData[i]);
+                        var job = jobData[i];
+                        $("#job-dropdown").append("<option value='" + job.job_id + "'>" + job.job_name + "</option>");
+                    }
+                } 
+
+                // Populate the locations dropdown
+                if (!locationVal) { 
+                    // If the dropdown is not selected, clear it and repopulate it with updated options
+                    $("#location-dropdown").html("<option value='' selected>Select Location...</option>");
+                    for (var i = 0; i < locationData.length; i++) {
+                        console.log(locationData[i]);
+                        var location = locationData[i];
+                        $("#location-dropdown").append("<option value='" + location.location_id + "'>" + location.location_name + "</option>");
+                    }
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("AJAX request failed: ", jqXHR, textStatus, errorThrown);
+            }
+        });
+    });
 
     /***** LABOUR *****/ 
     /**
@@ -171,7 +253,7 @@ $(document).ready(function() {
                     subtotal += overtimeTotal;
                 }
             }
-            
+
             if (!isNaN(subtotal) || subtotal == 0.00) {
                 // Set the subtotal
                 $("#labour-subtotal").val(subtotal.toFixed(2));

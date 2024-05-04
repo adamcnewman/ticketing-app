@@ -35,8 +35,9 @@ class ProjectController {
         return $locations;
     }
 
-    public function updateDropdowns() {
-
+    public function getFilteredDropdownData($customer_id, $job_id, $location_id) {
+        $dropdownData = $this->projectModel->getFilteredDropdownData($customer_id, $job_id, $location_id);
+        return $dropdownData;
     }
 }
 ?>

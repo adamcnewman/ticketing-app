@@ -11,8 +11,10 @@ class TruckModel {
     public function getTrucks() {
         $trucks = [];
         $query = 
-            "SELECT truck_id, label 
-            FROM truck
+            "SELECT 
+                truck_id, label 
+            FROM 
+                truck
             ";
         $stmt = $this->db->prepare($query);
         if ($stmt) {
@@ -29,8 +31,14 @@ class TruckModel {
     public function getTruckRateFromID($truck_id, $uom) {
         $truck_rate = [];
         $query = 
-            "SELECT rate FROM truck_rate
-            WHERE truck_id = ? AND uom = ?";
+            "SELECT 
+                rate 
+            FROM 
+                truck_rate
+            WHERE 
+                truck_id = ? 
+                AND 
+                uom = ?";
         $stmt = $this->db->prepare($query);
         $truck_id = intval($truck_id);
         if ($stmt) {
