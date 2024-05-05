@@ -64,10 +64,10 @@ CREATE TABLE IF NOT EXISTS `project` (
     `customer_id` BIGINT UNSIGNED NOT NULL,
     `job_id` BIGINT UNSIGNED NOT NULL,
     `location_id` BIGINT UNSIGNED NOT NULL,
-    `status` ENUM("Pending", "Active", "Closed") NOT NULL,
+    `project_status` ENUM("Pending", "Active", "Closed") NOT NULL,
     `ordered_by` VARCHAR(64),
     `area` VARCHAR(64),
-    `date` DATE NOT NULL,
+    `project_date` DATE NOT NULL,
     PRIMARY KEY (`project_id`),
     FOREIGN KEY (`ticket_id`) REFERENCES `ticket`(`ticket_id`),
     FOREIGN KEY (`customer_id`) REFERENCES `customer`(`customer_id`),
@@ -92,8 +92,8 @@ CREATE TABLE IF NOT EXISTS `truck_rate` (
 
 CREATE TABLE IF NOT EXISTS `truck_item` (
     `truck_item_id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
-    `truck_id` BIGINT UNSIGNED NOT NULL,
     `ticket_id` BIGINT UNSIGNED NOT NULL,
+    `truck_id` BIGINT UNSIGNED NOT NULL,
     `quantity` BIGINT UNSIGNED NOT NULL,
     `uom` ENUM("Hourly", "Fixed") NOT NULL,
     `rate` DECIMAL(10,2) UNSIGNED NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `truck_item` (
 CREATE TABLE IF NOT EXISTS `misc_item` (
     `misc_item_id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
     `ticket_id` BIGINT UNSIGNED NOT NULL,
-    `description` TEXT,
+    `misc_description` TEXT,
     `cost` DECIMAL(10,2) UNSIGNED,
     `price` DECIMAL(10,2) UNSIGNED NOT NULL,
     `quantity` DECIMAL(10,2) UNSIGNED NOT NULL,

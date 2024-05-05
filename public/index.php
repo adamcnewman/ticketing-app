@@ -16,7 +16,7 @@
     <div id="title-banner" class="container">
         <h2>Edit Ticket</h2>
     </div>
-    <form class="container">
+    <form id="ticket-form" class="container">
         <?php 
         // Project Section
         include_once __DIR__ . "/../src/View/ProjectView.php";

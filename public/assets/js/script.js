@@ -98,13 +98,12 @@ $(document).ready(function() {
                 var customerData = jsonData.customers;
                 var jobData = jsonData.jobs;
                 var locationData = jsonData.locations;
-                
+                //TO                        DO: sd
                 // Populate the customers dropdown
                 if (!customerVal) { 
                     // If the dropdown is not selected, clear it and repopulate it with updated options
                     $("#customer-dropdown").html("<option value='' selected>Select Customer...</option>");
                     for (var i = 0; i < customerData.length; i++) {
-                        console.log(customerData[i]);
                         var customer = customerData[i];
                         $("#customer-dropdown").append("<option value='" + customer.customer_id + "'>" + customer.customer_name + "</option>");
                     }
@@ -115,7 +114,6 @@ $(document).ready(function() {
                     // If the dropdown is not selected, clear it and repopulate it with updated options
                     $("#job-dropdown").html("<option value='' selected>Select Job...</option>");
                     for (var i = 0; i < jobData.length; i++) {
-                        console.log(jobData[i]);
                         var job = jobData[i];
                         $("#job-dropdown").append("<option value='" + job.job_id + "'>" + job.job_name + "</option>");
                     }
@@ -126,7 +124,6 @@ $(document).ready(function() {
                     // If the dropdown is not selected, clear it and repopulate it with updated options
                     $("#location-dropdown").html("<option value='' selected>Select Location...</option>");
                     for (var i = 0; i < locationData.length; i++) {
-                        console.log(locationData[i]);
                         var location = locationData[i];
                         $("#location-dropdown").append("<option value='" + location.location_id + "'>" + location.location_name + "</option>");
                     }
@@ -429,5 +426,135 @@ $(document).ready(function() {
             $(this).closest("#misc .line-item.container").remove();
             calculateMiscSubtotal(); // Recalculate subtotal after removal
         }
+    });
+
+    /***** FORM SUBMIT *****/
+    /**
+     * Submits the form data to the database.
+     */
+    $(document).on("submit", "#ticket-form", function(e) {
+        e.preventDefault();
+
+        /** PROJECT DATA */
+        var projectData = {
+            customerID: $("#customer-dropdown").val(),
+            jobID: $("#job-dropdown").val(),
+            locationID: $("#location-dropdown").val(),
+            status: $("#status").val(),
+            orderedBy: $("#ordered-by").val(),
+            date: $("#date").val(),
+            area: $("#area").val(),
+        };
+
+        /** DESCRIPTION OF WORK*/
+        var descriptionOfWork = tinymce.get('tinymce').getContent();
+
+        /** LABOUR DATA */
+        var labourLineItems = [];
+        $("#labour .line-item.container").each(function() {
+            var lineItem = $(this);
+            var position = lineItem.find(".position-dropdown").val();
+            var uom = lineItem.find(".labour-uom").val();
+            var regularRate = lineItem.find(".labour-regular-rate").val();
+            var regularHours = lineItem.find(".labour-regular-hours").val();
+            var overtimeRate = lineItem.find(".labour-overtime-rate").val();
+            var overtimeHours = lineItem.find(".labour-overtime-hours").val();
+            // var subtotal = lineItem.find(".labour-subtotal").val();
+            if (!regularHours) {
+                regularHours = "0";
+            }
+            if (!overtimeHours) {
+                overtimeHours = "0";
+            }
+            if (uom === "Fixed") {
+                overtimeRate = "0";
+            }
+            if (position && uom && regularRate && regularHours && overtimeRate && overtimeHours) {
+                labourLineItems.push({
+                    positionID: position,
+                    uom: uom,
+                    regularRate: regularRate,
+                    regularHours: regularHours,
+                    overtimeRate: overtimeRate,
+                    overtimeHours: overtimeHours,
+                // subtotal: subtotal
+                });
+            }
+        });
+
+        /** TRUCK DATA */
+        var truckLineItems = [];
+        $("#truck .line-item.container").each(function() {
+            var lineItem = $(this);
+            var truckID = lineItem.find(".truck-label-dropdown").val();
+            var quantity = lineItem.find(".truck-quantity").val();
+            var uom = lineItem.find(".truck-uom-dropdown").val();
+            var rate = lineItem.find(".truck-rate").val();
+            var total = lineItem.find(".truck-total").val();
+
+            if (!quantity) quantity = "0";
+
+            if (truckID && uom && quantity && rate && total) {
+                truckLineItems.push({
+                    truckID: truckID,
+                    uom: uom,
+                    quantity: quantity,
+                    rate: rate,
+                    total: total
+                });
+            }
+        });
+
+        /** MISC DATA */
+        var miscLineItems = [];
+        $("#misc .line-item.container").each(function() {
+            var lineItem = $(this);
+            var description = lineItem.find(".misc-description").val();
+            var cost = lineItem.find(".misc-cost").val();
+            var price = lineItem.find(".misc-price").val();
+            var quantity = lineItem.find(".misc-quantity").val();
+            var total = lineItem.find(".misc-total").val();
+
+            // if (!description) description = "N/A";
+            if (!cost) cost = "0";
+            if (!price) price = "0";
+            if (!quantity) quantity = "0";
+            if (!total) total = "0";
+
+            if (description && cost && price && quantity && total) {
+                miscLineItems.push({
+                    description: description,
+                    cost: cost,
+                    price: price,
+                    quantity: quantity,
+                    total: total
+                });
+            }
+        });
+
+        if (labourLineItems.length == 0) labourLineItems.push({empty: true});
+        if (truckLineItems.length == 0) truckLineItems.push({empty: true});
+        if (miscLineItems.length == 0) miscLineItems.push({empty: true});
+
+        /** INSERT TICKET DATA IN DB */
+        $.ajax({
+            url: "assets/handler.php",
+            type: "POST",
+            data: {
+                action: "submit_ticket",
+                descriptionOfWork: descriptionOfWork,
+                projectData: projectData,
+                labourLineItems: labourLineItems,
+                truckLineItems: truckLineItems,
+                miscLineItems: miscLineItems
+            },
+            success: function(data) {
+                alert("Form submitted successfully!");
+                window.location.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("AJAX request failed: ", jqXHR, textStatus, errorThrown);
+            }
+        });
     });
 });
