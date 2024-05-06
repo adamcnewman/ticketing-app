@@ -11,9 +11,12 @@
     - [Database Schema](#database-schema) 
 - [App Architecture](#app-architecture)
 
+---
+
 ### Overview
 This Ticketing App is a single-page application designed to manage the creation of tickets for various tasks associated with different projects, staff positions, and logistical needs pertaining to a customer.
 
+---
 
 ### Directory Structure
 
@@ -68,9 +71,11 @@ TicketingApp\
 ├── .htaccess\
 └── README.md
 
+---
 
 ### Running the Program
-1. In the root directory, create a file in the `config` folder called `db.config.php`. Create the file as follows, where: 
+1. If using WampServer, install WampServer and [dependencies](#dependencies--environment) and place this project in the `C:/wamp64/www/` folder.
+2. In the root directory, create a file in the `config` folder called `db.config.php`. Create the file as follows, where: 
     - `<HOST_ADDRESS>` is the ip or location that the server is hosted 
     - `<USERNAME>` and `<PASSWORD>` are the database credentials
 ```php
@@ -82,11 +87,13 @@ TicketingApp\
 ?>
 ```
 
-2. Run the `create_db.sql` script from the `sql/` folder in PHP MyAdmin to create the database called `ticketing_app`.
+3. Run the `create_db.sql` script from the `sql/` folder in PHP MyAdmin to create the database called `ticketing_app`.
 
-3. Run the `init_db.sql` script from the `sql/` folder in PHP MyAdmin to initialize the `ticketing_app` database with data. 
+4. Run the `init_db.sql` script from the `sql/` folder in PHP MyAdmin to initialize the `ticketing_app` database with data. 
 
-4. Start the server and navigate to the hosted location to use the app.
+5. Start the server and navigate to the hosted location to use the app, eg) `localhost/TicketingApp`.
+
+---
 
 ### Design
 
