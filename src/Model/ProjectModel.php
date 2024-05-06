@@ -41,7 +41,7 @@ class ProjectModel {
             }
             return $customers;
         } catch (Exception $e) {
-            throw "Error (getStaffData)" . $e;
+            throw new Exception("Error (getStaffData)" . $e);
         }
     }
 
@@ -73,7 +73,7 @@ class ProjectModel {
             }
             return $jobs;
         } catch (Exception $e) {
-            throw "Error (getJobs)" . $e;
+            throw new Exception("Error (getJobs)" . $e);
         }
     }
     /**
@@ -102,7 +102,7 @@ class ProjectModel {
             }
             return $locations;
         } catch (Exception $e) {
-            throw "Error (getLocations)" . $e;
+            throw new Exception("Error (getLocations)" . $e);
         }
     }
 
@@ -153,7 +153,7 @@ class ProjectModel {
             }
             return $data;
         } catch (Exception $e) {
-            throw "Error (getRawDropdownData)" . $e;
+            throw new Exception("Error (getRawDropdownData)" . $e);
         }
     }
 
@@ -199,7 +199,7 @@ class ProjectModel {
             }
             return $projectData;
         } catch (Exception $e) {
-            throw "Error (getFilteredDropdownData)" . $e;
+            throw new Exception("Error (getFilteredDropdownData)" . $e);
         }
     }
 }

@@ -26,7 +26,9 @@ class TicketModel {
 
             $query = 
                 "INSERT INTO 
-                    ticket (description_of_work) 
+                    ticket (
+                        description_of_work
+                    ) 
                 VALUES 
                     (?)";
 
@@ -42,7 +44,7 @@ class TicketModel {
             }
             $this->ticketID = $ticketID;
         } catch (Exception $e) {
-            throw "Error (insertTicketEntry): " . $e->getMessage();
+            throw new Exception("Error (insertTicketEntry): " . $e->getMessage());
         }
     }
 
@@ -57,7 +59,16 @@ class TicketModel {
 
             $query = 
                 "INSERT INTO 
-                    project (ticket_id, customer_id, job_id, location_id, project_status, ordered_by, area, project_date) 
+                    project (
+                        ticket_id, 
+                        customer_id, 
+                        job_id, 
+                        location_id, 
+                        project_status, 
+                        ordered_by, 
+                        area, 
+                        project_date
+                    ) 
                 VALUES 
                     (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -80,7 +91,7 @@ class TicketModel {
                 $stmt->close();
             }
         } catch (Exception $e) {
-            throw "Error (insertProjectEntry): " . $e->getMessage();
+            throw new Exception("Error (insertProjectEntry): " . $e->getMessage());
         }
     }
 
@@ -90,11 +101,19 @@ class TicketModel {
      */
     private function insertLabourLineItems($labourLineItems) {
         try {
-            if (is_array($labourLineItems) && !(isset($labourLineItems["empty"]) && $labourLineItems["empty"] === true)) {
+            if (!(isset($labourLineItems[0]["empty"]) && $labourLineItems[0]["empty"] == true)) {
                 foreach ($labourLineItems as $labourLineItem) {
                     $query = 
                         "INSERT INTO 
-                            labour_item (ticket_id, position_id, uom, regular_rate, regular_hours, overtime_rate, overtime_hours) 
+                            labour_item (
+                                ticket_id, 
+                                position_id, 
+                                uom, 
+                                regular_rate, 
+                                regular_hours, 
+                                overtime_rate, 
+                                overtime_hours
+                            ) 
                         VALUES 
                             (?, ?, ?, ?, ?, ?, ?)";
 
@@ -118,7 +137,7 @@ class TicketModel {
                 }
             }
         } catch (Exception $e) {
-            throw "Error (insertLabourLineItems): " . $e->getMessage();
+            throw new Exception("Error (insertLabourLineItems): " . $e->getMessage());
         }
     }
 
@@ -128,11 +147,18 @@ class TicketModel {
      */
     private function insertTruckLineItems($truckLineItems) {
         try {
-            if (is_array($truckLineItems) && !(isset($truckLineItems["empty"]) && $truckLineItems["empty"] === true)) {
+            if (!(isset($truckLineItems[0]["empty"]) && $truckLineItems[0]["empty"] == true)) {
                 foreach ($truckLineItems as $truckLineItem) {
                     $query = 
                         "INSERT INTO 
-                            truck_item (ticket_id, truck_id, quantity, uom, rate, total) 
+                            truck_item (
+                                ticket_id, 
+                                truck_id, 
+                                quantity, 
+                                uom, 
+                                rate, 
+                                total
+                            ) 
                         VALUES 
                             (?, ?, ?, ?, ?, ?)";
 
@@ -155,7 +181,7 @@ class TicketModel {
                 }
         }
         } catch (Exception $e) {
-            throw "Error (insertTruckLineItems): " . $e->getMessage();
+            throw new Exception("Error (insertTruckLineItems): " . $e->getMessage());
         }
     }
 
@@ -165,11 +191,17 @@ class TicketModel {
      */
     private function insertMiscLineItems($miscLineItems) {
         try { 
-            if (is_array($miscLineItems) && !(isset($miscLineItems["empty"]) && $miscLineItems["empty"] === true)) {
+            if (!(isset($miscLineItems[0]["empty"]) && $miscLineItems[0]["empty"] == true)) {
                 foreach ($miscLineItems as $miscLineItem) {
                     $query = 
                         "INSERT INTO 
-                            misc_item (ticket_id, misc_description, cost, price, quantity, total) 
+                            misc_item (
+                                ticket_id, 
+                                misc_description, 
+                                cost, price, 
+                                quantity, 
+                                total
+                            ) 
                         VALUES 
                             (?, ?, ?, ?, ?, ?)";
 
@@ -192,7 +224,7 @@ class TicketModel {
                 }
             }
         } catch (Exception $e) {
-            throw "Error (insertMiscLineItems): " . $e->getMessage();
+            throw new Exception("Error (insertMiscLineItems): " . $e->getMessage());
         }
     }
 
@@ -216,16 +248,17 @@ class TicketModel {
 
             error_log("Attempting to insert truck with data: " . print_r($truckLineItems, true));
             $this->insertTruckLineItems($truckLineItems);
-            error_log("truck insertion attempted.");
+            error_log("Truck insertion attempted.");
 
             error_log("Attempting to insert misc with data: " . print_r($miscLineItems, true));
             $this->insertMiscLineItems($miscLineItems);
-            error_log("misc insertion attempted.");
+            error_log("Misc insertion attempted.");
 
             $this->db->commit();
         } catch (Exception $e) {
             $this->db->rollback();
-            throw "Error (createTicket)" . $e;
+            error_log("Rolling Back Transaction" . $e->getMessage());
+            throw new Exception("Error (createTicket)" . $e);
         }
     }
 }

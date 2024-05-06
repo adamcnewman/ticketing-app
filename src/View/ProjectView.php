@@ -18,9 +18,9 @@
                 <label for="status">Status:</label>
                 <select required id="status" name="status">
                     <option value="" readonly selected class="readonly">Select Status...</option>
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="approved">Cancelled</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
                 </select>
             </div>
             <div class="input-wrapper horizontal">

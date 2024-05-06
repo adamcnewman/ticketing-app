@@ -39,7 +39,7 @@ class TruckModel {
             }
             return $trucks;
         } catch (Exception $e) {
-            throw "Error (getTrucks)" . $e;
+            throw new Exception("Error (getTrucks)" . $e);
         }
     }
 
@@ -72,15 +72,9 @@ class TruckModel {
                 }
                 $stmt->close();
             }
-            if (isset($truck_rate[0]["rate"])) {
-                return $truck_rate[0]["rate"];
-            } else {
-                // Handle the case where "rate" is not set
-                // This could be returning a default value, throwing an error, etc.
-                return "?";
-            }
+            return $truck_rate[0]["rate"];
         } catch (Exception $e) {
-            throw "Error (getTruckRateFromID)" . $e;
+            throw new Exception("Error (getTruckRateFromID)" . $e);
         }
     }
 }

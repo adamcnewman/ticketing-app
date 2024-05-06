@@ -39,7 +39,7 @@ class LabourModel {
             }
             return $staffData;
         } catch (Exception $e) {
-            throw "Error (getStaffData)" . $e;
+            throw new Exception("Error (getStaffData)" . $e);
         }
     }
 
@@ -61,6 +61,7 @@ class LabourModel {
             $staff_id = intval($staff_id);
             if ($stmt) {
                 $stmt->bind_param("i", $staff_id);
+                $success = $stmt->execute();
                 if (!$success) {
                     throw new Exception("Query failed: " . $stmt->error);
                 }
@@ -72,7 +73,7 @@ class LabourModel {
             }
             return $positions;
         } catch (Exception $e) {
-            throw "Error (getPositionsFromStaffID)" . $e;
+            throw new Exception("Error (getPositionsFromStaffID)" . $e);
         }
     }
 
@@ -94,6 +95,7 @@ class LabourModel {
             $position_id = intval($position_id);
             if ($stmt) {
                 $stmt->bind_param("is", $position_id, $uom);
+                $success = $stmt->execute();
                 if (!$success) {
                     throw new Exception("Query failed: " . $stmt->error);
                 }
@@ -105,7 +107,7 @@ class LabourModel {
             }
             return $rates;
         } catch (Exception $e) {
-            throw "Error (getPositionRates)" . $e;
+            throw new Exception("Error (getPositionRates)" . $e);
         }
     }
 }
