@@ -1,4 +1,8 @@
 <?php
+/**
+ * LabourController.php
+ * 
+ */
 require_once __DIR__ . "/../Model/LabourModel.php";
 
 class LabourController {

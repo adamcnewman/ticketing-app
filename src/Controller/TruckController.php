@@ -1,4 +1,9 @@
 <?php
+/**
+ * TruckController.php
+ * 
+ */
+
 require_once __DIR__ . "/../Model/TruckModel.php";
 
 class TruckController {

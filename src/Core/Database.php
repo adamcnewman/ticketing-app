@@ -1,4 +1,11 @@
 <?php
+/**
+ * Database.php
+ * 
+ * This file contains the Database class which is responsible for 
+ * creating and owning the singleton connection to the database.
+ */
+
 require_once __DIR__ . "/../../config/db.config.php";
 
 class Database {

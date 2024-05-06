@@ -23,9 +23,7 @@ $(document).ready(function() {
      * On initial page load, the following data is fetched from the database:
      * - Project data (customers, jobs, locations)
      * - Staff data
-     * - Labour line item HTML
      * - Truck data
-     * - Truck line item HTML
      */
     $.ajax({
         url: "assets/handler.php",
@@ -37,9 +35,7 @@ $(document).ready(function() {
             var jsonData = JSON.parse(data);
             var projectData = jsonData.projectData;
             var staffData = jsonData.staffData;   
-            var labourLineItemHTML = jsonData.labourLineItemHTML;
             var truckData = jsonData.truckData; 
-            var truckLineItemHTML = jsonData.truckLineItemHTML;
 
             /* Project Section */
             // Populate customers dropdown
@@ -62,7 +58,7 @@ $(document).ready(function() {
 
             /* Labour Section */
             /* Populate the staff dropdown */
-            $("#labour .line-items").append(labourLineItemHTML);
+            // $("#labour .line-items").append(labourLineItemHTML);
             for (var i = 0; i < staffData.length; i++) {
                 var staff = staffData[i];
                 $("#staff-dropdown").append("<option value='" + staff.staff_id + "'>" + staff.name + "</option>");
@@ -70,7 +66,6 @@ $(document).ready(function() {
 
             /* Truck Section */
             /* Populate the truck dropdown */
-            $("#truck .line-items").append(truckLineItemHTML);
             for (var i = 0; i < truckData.length; i++) {
                 var truck = truckData[i];
                 $("#truck .line-item #truck-label-dropdown").append("<option value='" + truck.truck_id + "'>" + truck.label + "</option>");

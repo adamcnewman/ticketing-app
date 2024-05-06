@@ -1,4 +1,9 @@
 <?php
+/**
+ * TicketModel.php
+ * 
+ */
+
 require_once __DIR__ . "/../Core/Database.php";
 
 class TicketModel {
@@ -163,19 +168,11 @@ class TicketModel {
     }
 
     /**
-     * Creates a new ticket entry in the database
+     * Creates a transaction to enter a new ticket into the database, and related data in other tables. 
      */
     public function createTicket($descriptionOfWork, $projectData, $labourLineItems, $truckLineItems, $miscLineItems) {
         try {
             $this->db->begin_transaction();
-        
-            // Perform operations
-            // $this->insertTicketEntry($descriptionOfWork);
-            // $this->insertProjectEntry($projectData);
-            // $this->insertLabourLineItems($labourLineItems);
-            // $this->insertTruckLineItems($truckLineItems);
-            // $this->insertMiscLineItems($miscLineItems);
-
             error_log("Attempting to insert ticket with description: $descriptionOfWork");
             $this->insertTicketEntry($descriptionOfWork);
             error_log("Ticket inserted with ID: " . $this->ticketID);
@@ -196,10 +193,8 @@ class TicketModel {
             $this->insertMiscLineItems($miscLineItems);
             error_log("misc insertion attempted.");
 
-            // If all operations are successful
             $this->db->commit();
         } catch (Exception $e) {
-            // If any operation fails
             $this->db->rollback();
             throw $e;
         }
