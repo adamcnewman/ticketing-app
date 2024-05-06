@@ -44,10 +44,10 @@ TicketingApp\
 │   │   ├── init_page.php `Initializes the page with data.`\
 │   │   └── submit_ticket.php `Handles submitting the ticket.`\
 │   ├── **Controller** `Receive user requests via Actions and redirect to appropriate Model for data retrieval.`\
-│   │   ├── LabourController.php ``\
-│   │   ├── ProjectController.php ``\
-│   │   ├── TicketController.php ``\
-│   │   └── TruckController.php ``\
+│   │   ├── LabourController.php `Handles user requests for Labour line items.`\
+│   │   ├── ProjectController.php `Handles user requests for Project section.`\
+│   │   ├── TicketController.php `Handles user request to submit form.`\
+│   │   └── TruckController.php `Handles user requests for Truck line items.`\
 │   ├── **Core** \
 │   │   └── Database.php `Singleton database instance used in Models.`\
 │   ├── **Model** `Receives Controller requests and executes database queries.`\
