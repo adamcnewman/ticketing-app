@@ -169,17 +169,17 @@ VALUES  ("Acme Corp"),
 
 -- job
 INSERT INTO `job` (`customer_id`, `name`)
-VALUES  (1, "Office Build"),
-        (1, "Warehouse Setup"),
-        (2, "Mall Renovation"),
-        (2, "New Outlet Construction"),
-        (2, "Office Redesign"),
-        (3, "Factory Maintenance"),
-        (3, "New Plant Construction"),
-        (4, "Residential Development"),
-        (4, "Commercial Complex"),
-        (5, "School Expansion"),
-        (5, "Hospital Upgrade");
+VALUES  (1, "#100 Office Build"),
+        (1, "#101 Warehouse Setup"),
+        (2, "#102 Mall Renovation"),
+        (2, "#103 New Outlet Construction"),
+        (2, "#104 Office Redesign"),
+        (3, "#105 Factory Maintenance"),
+        (3, "#106 New Plant Construction"),
+        (4, "#107 Residential Development"),
+        (4, "#108 Commercial Complex"),
+        (5, "#109 School Expansion"),
+        (5, "#110 Hospital Upgrade");
 
 
 -- location

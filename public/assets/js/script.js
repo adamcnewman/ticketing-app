@@ -26,7 +26,7 @@ $(document).ready(function() {
      * - Truck data (truck labels)
      */
     $.ajax({
-        url: "assets/handler.php",
+        url: "router/handler.php",
         type: "POST",
         data: {
             action: "init_page"
@@ -106,7 +106,7 @@ $(document).ready(function() {
         var jobVal = $("#job-dropdown").val();
         var locationVal = $("#location-dropdown").val();
         $.ajax({
-            url: "assets/handler.php",
+            url: "router/handler.php",
             type: "POST",
             data: {
                 action: "get_project_dropdown_data",
@@ -169,7 +169,7 @@ $(document).ready(function() {
         var staffVal = lineItem.find(".staff-dropdown").val();
         if (staffVal) {
             $.ajax({
-                url: "assets/handler.php",
+                url: "router/handler.php",
                 type: "POST",
                 data: {
                     action: "get_staff_positions",
@@ -213,7 +213,7 @@ $(document).ready(function() {
 
         if (positionVal && uomVal) {
             $.ajax({
-                url: "assets/handler.php",
+                url: "router/handler.php",
                 type: "POST",
                 data: {
                     action: "get_position_rates",
@@ -324,7 +324,7 @@ $(document).ready(function() {
         var uomVal = lineItem.find(".truck-uom-dropdown").val();
         if (labelVal && uomVal) {
             $.ajax({
-                url: "assets/handler.php",
+                url: "router/handler.php",
                 type: "POST",
                 data: {
                     action: "get_truck_rate",
@@ -604,7 +604,7 @@ $(document).ready(function() {
 
         /** INSERT TICKET DATA IN DB */
         $.ajax({
-            url: "assets/handler.php",
+            url: "router/handler.php",
             type: "POST",
             data: {
                 action: "submit_ticket",
