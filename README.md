@@ -99,7 +99,21 @@ TicketingApp\
 
 4. Run the `init_db.sql` script from the `sql/` folder in PHP MyAdmin to initialize the `ticketing_app` database with data. 
 
-5. Start the server and navigate to the hosted location to use the app, eg) `localhost/TicketingApp`.
+5. Start the server and navigate to the hosted location to use the app, eg: `localhost/TicketingApp`.
+
+---
+
+### Known Issues
+
+1. Project Section: *Customer, Job, Location & Dropdown Filtering*
+    - Current functionality: User can select a customer, job, or location first, and the options in the other 2 dropdowns will be filtered to only show relevant data (ie. selecting a customer will only show their jobs and locations of those jobs). Similar for selecting job or location first. Selecting the second dropdown will filter the third dropdown options. This does work as intended if selecting one dropdown, selecting the second, then the third. Or, selecting a dropdown, then unselecting it.
+        - Issue: If a dropdown is selected, and then the same dropdown is changed to another non-empty option, while either one or both of the other dropdowns have non-empty values (have options selected) then the other dropdowns will not have their values updated to reflect the changed dropdown.
+        - To replicate:
+            - Select a customer (eg. Gamma Industries)
+            - Only Gamma jobs show up Job dropdown (expected). Select a job (eg. #105 Factory Maintenance)
+            - Select a different customer (eg. Delta Services)
+            - Job dropdown options will not update to show Delta Services jobs.
+
 
 ---
 
