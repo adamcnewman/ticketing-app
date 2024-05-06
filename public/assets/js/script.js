@@ -1,8 +1,32 @@
 /**
- * Initializes the script when the document is ready.
+ * script.js
+ * 
+ * This script handles the dynamic functionality of the ticket form, and is comprised of the following sections:
+ * 1. Initial Page Load
+ * 2. Project Section
+ * 3. Labour Section
+ * 4. Truck Section
+ * 5. Miscellaneous Section
+ * 6. Form Submission
+ * 7. Other Utilities
  */
+
 $(document).ready(function() {
-    /***** INITIAL PAGE LOAD *****/
+    /***** 1. INITIAL PAGE LOAD *****/
+
+    /**
+     * Scrolls to the top of the page on page load.
+     */
+    $("html, body").animate({ scrollTop: 0 }, "fast");
+
+    /**
+     * On initial page load, the following data is fetched from the database:
+     * - Project data (customers, jobs, locations)
+     * - Staff data
+     * - Labour line item HTML
+     * - Truck data
+     * - Truck line item HTML
+     */
     $.ajax({
         url: "assets/handler.php",
         type: "POST",
@@ -75,7 +99,9 @@ $(document).ready(function() {
         $("#date").val(today);
     }
 
-    /***** PROJECT *****/
+
+    /***** 2. PROJECT *****/
+
     /**
      * When customer, job, or location dropdowns are changed, queries database for filtered dropdown data,
      * then updates the dropdowns accordingly.
@@ -123,8 +149,8 @@ $(document).ready(function() {
 
                 // Populate the locations dropdown
                 if (!locationVal) { 
-                // If the dropdown is not selected, or if current selection is not in result data,
-                // clear selection and repopulate dropdown with updated options
+                    // If the dropdown is not selected, or if current selection is not in result data,
+                    // clear selection and repopulate dropdown with updated options
                     $("#location-dropdown").html("<option value='' selected>Select Location...</option>");
                     for (var i = 0; i < locationData.length; i++) {
                         var location = locationData[i];
@@ -138,7 +164,8 @@ $(document).ready(function() {
         });
     });
 
-    /***** LABOUR *****/ 
+
+    /***** 3. LABOUR *****/ 
     /**
      * Gets the positions when staff dropdown is selected.
      */
@@ -276,7 +303,6 @@ $(document).ready(function() {
      * Removes the labour line item and recalculates the labour subtotal.
      */ 
     $(document).on("click", "#labour .remove-line-item", function() {
-        console.log
         if ($("#labour .line-item.container").length > 1) { // Ensure at least one line item remains
             $(this).closest("#labour .line-item.container").remove();
         }
@@ -284,7 +310,8 @@ $(document).ready(function() {
     });
 
 
-    /***** TRUCK *****/ 
+    /***** 4. TRUCK *****/ 
+
     /**
      * Get the rate of the selected truck & uom when the dropdown selections change.
      */ 
@@ -370,7 +397,9 @@ $(document).ready(function() {
         calculateTruckSubtotal(); // Recalculate subtotal after removal
     });
 
-    /***** MISCELLANEOUS *****/ 
+
+    /***** 5. MISCELLANEOUS *****/ 
+
     /**
      * Calculates the total cost of the miscellaneous item based on the price and quantity.
      */
@@ -423,7 +452,9 @@ $(document).ready(function() {
         calculateMiscSubtotal(); // Recalculate subtotal after removal
     });
 
-    /***** FORM SUBMIT *****/
+
+    /***** 6. FORM SUBMIT *****/
+
     /**
      * Prevents the form from submitting when the enter key is pressed.
      */
@@ -435,20 +466,20 @@ $(document).ready(function() {
     });
 
     /**
-     * Validates the form data before submission.
+     * Validates form data before submission.
      */
     function validateForm() {
-        var isValid = false;
-        var descriptionOfWork = tinymce.get('tinymce').getContent();
+        var isValid = true;
+        var descriptionOfWork = tinymce.get("tinymce").getContent();
         if (descriptionOfWork.trim() === "") {
             alert("Please enter a description of work.");
             $("html, body").animate({
                 scrollTop: $("#tinymce").offset().top
             }, 500);
-            return isValid;
+            isValid = false;
         }
+        return isValid
     }
-
 
     /**
      * Submits the form data to the database.
@@ -469,7 +500,7 @@ $(document).ready(function() {
         };
 
         /** DESCRIPTION OF WORK*/
-        var descriptionOfWork = tinymce.get('tinymce').getContent();
+        var descriptionOfWork = tinymce.get("tinymce").getContent();
 
         /** LABOUR DATA */
         var labourLineItems = [];
@@ -580,11 +611,14 @@ $(document).ready(function() {
         });
     });
 
-    /***** Other Utilities *****/
+    
+    /***** 7. Other Utilities *****/
+
     /**
-     * Only permits numeric (0-9), "-", and "." from being typed into an input field.
+     * Only permits numeric (0-9), "-", and "." characters 
+     * from being typed into an input field with the "numeric" class.
      */
     $(document).on("input", ".numeric", function() {
-        this.value = this.value.replace(/[^0-9.-]/g, '');
+        this.value = this.value.replace(/[^0-9.-]/g, "");
     });
 });
