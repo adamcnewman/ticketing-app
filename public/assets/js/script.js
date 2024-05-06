@@ -22,8 +22,8 @@ $(document).ready(function() {
     /**
      * On initial page load, the following data is fetched from the database:
      * - Project data (customers, jobs, locations)
-     * - Staff data
-     * - Truck data
+     * - Staff data (staff)
+     * - Truck data (truck labels)
      */
     $.ajax({
         url: "assets/handler.php",
@@ -296,10 +296,18 @@ $(document).ready(function() {
     
     /**
      * Removes the labour line item and recalculates the labour subtotal.
+     * If there is only one line item left, the values are cleared instead of removing the line item.
      */ 
     $(document).on("click", "#labour .remove-line-item", function() {
+        var lineItem = $(this).closest("#labour .line-item.container");
         if ($("#labour .line-item.container").length > 1) { // Ensure at least one line item remains
-            $(this).closest("#labour .line-item.container").remove();
+            lineItem.remove();
+        } else if ($("#labour .line-item.container").length == 1) {
+            lineItem.find(".staff-dropdown").val("");
+            lineItem.find(".position-dropdown").html("<option value=''>Select Position... </option>");
+            lineItem.find(".labour-uom").val("");
+            lineItem.find("input").val("");
+            
         }
         calculateLabourTotal(); // Recalculate total after removal
     });
@@ -384,10 +392,16 @@ $(document).ready(function() {
     
     /**
      * Removes the truck line item and recalculates the truck subtotal.
+     * If there is only one line item left, the values are cleared instead of removing the line item.
      */ 
     $(document).on("click", "#truck .remove-line-item", function() {
+        var lineItem = $(this).closest("#truck .line-item.container");
         if ($("#truck .line-item.container").length > 1) { // Ensure at least one line item remains
-            $(this).closest("#truck .line-item.container").remove();
+            lineItem.remove();
+        } else if ($("#truck .line-item.container").length == 1) {
+            lineItem.find(".truck-label-dropdown").val("");
+            lineItem.find(".truck-uom-dropdown").val("");
+            lineItem.find("input").val("");
         }
         calculateTruckSubtotal(); // Recalculate subtotal after removal
     });
@@ -439,10 +453,14 @@ $(document).ready(function() {
 
     /**
      * Removes the misc line item and recalculates the misc subtotal.
+     * If there is only one line item left, the values are cleared instead of removing the line item.
      */ 
     $(document).on("click", "#misc .remove-line-item", function() {
+        var lineItem = $(this).closest("#misc .line-item.container");
         if ($("#misc .line-item.container").length > 1) { // Ensure at least one line item remains
-            $(this).closest("#misc .line-item.container").remove();
+           lineItem.remove();
+        } else if ($("#misc .line-item.container").length == 1) {
+            lineItem.find("input").val("");
         }
         calculateMiscSubtotal(); // Recalculate subtotal after removal
     });
