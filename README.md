@@ -2,7 +2,7 @@
 
 ### Table of Contents
 - [Overview](#overview)
-- [Dependencies & Environment](#dependencies--environment)
+- [Dependencies & Environment](#dependencies-and-environment)
 - [Directory Structure](#directory-structure)
 - [Running the Program](#running-the-program)
 - [Design](#design)
@@ -15,6 +15,14 @@
 
 ### Overview
 This Ticketing App is a single-page application designed to manage the creation of tickets for various tasks associated with different projects, staff positions, and logistical needs pertaining to a customer.
+
+---
+
+### Dependencies and Environment
+- **Apache** 2.4.59
+- **MySQL** 5.7.44
+- **PHP** 5.6.4 (PHP MyAdmin 4.9.11)
+- **WampServer** 3.3.5 64 Bit
 
 ---
 
@@ -74,7 +82,7 @@ TicketingApp\
 ---
 
 ### Running the Program
-1. If using WampServer, install WampServer and [dependencies](#dependencies--environment) and place this project in the `C:/wamp64/www/` folder.
+1. If using WampServer, install WampServer and [dependencies](#dependencies-and-environment) and place this project in the `C:/wamp64/www/` folder.
 2. In the root directory, create a file in the `config` folder called `db.config.php`. Create the file as follows, where: 
     - `<HOST_ADDRESS>` is the ip or location that the server is hosted 
     - `<USERNAME>` and `<PASSWORD>` are the database credentials
