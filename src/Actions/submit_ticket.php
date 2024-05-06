@@ -1,16 +1,23 @@
 <?php
+/**
+ * submit_ticket.php
+ * 
+ *  This file is used to submit a new ticket to the database.
+ */
 require_once __DIR__ . "/../Controller/TicketController.php";
 
-$ticketController = new TicketController();
-
-if (isset(  $_POST["descriptionOfWork"],
-            $_POST["projectData"],
-            $_POST["labourLineItems"], 
-            $_POST["truckLineItems"], 
-            $_POST["miscLineItems"]
-            )
-    ) {
-    try {
+try {
+    $ticketController = new TicketController();
+    
+    if (isset(  
+        $_POST["descriptionOfWork"],
+        $_POST["projectData"],
+        $_POST["labourLineItems"], 
+        $_POST["truckLineItems"], 
+        $_POST["miscLineItems"]
+        )) 
+    {
+        try {
         $ticketController->createTicket(
             $_POST["descriptionOfWork"], 
             $_POST["projectData"], 
@@ -21,10 +28,14 @@ if (isset(  $_POST["descriptionOfWork"],
         unset($ticketController);
         echo "Success";
     } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+        throw $e;
     }
 } else {
-    echo( "Could not create ticket - missing ticket data.");
+    throw new Exception("Could not submit ticket - missing required fields.");
 }
-
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(["error" => $e->getMessage()]);
+    exit;
+}
 ?>

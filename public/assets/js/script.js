@@ -302,7 +302,8 @@ $(document).ready(function() {
                     uom: uomVal
                 },
                 success: function(data) {
-                    var rate = data;
+                    var jsonData = JSON.parse(data);
+                    var rate = jsonData.rate;
                     lineItem.find(".truck-rate").val(rate);
                     lineItem.find(".truck-total").val((lineItem.find(".truck-quantity").val() * rate).toFixed(2));
                     calculateTruckSubtotal();
@@ -397,7 +398,7 @@ $(document).ready(function() {
                 subtotal += value;
             }
         });
-        
+
         if (!isNaN(subtotal.toFixed(2))) {
             $("#misc-subtotal").val(subtotal.toFixed(2));
         }
