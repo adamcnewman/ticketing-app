@@ -98,10 +98,11 @@ $(document).ready(function() {
                 var customerData = jsonData.customers;
                 var jobData = jsonData.jobs;
                 var locationData = jsonData.locations;
-                //TO                        DO: sd
+                
                 // Populate the customers dropdown
                 if (!customerVal) { 
-                    // If the dropdown is not selected, clear it and repopulate it with updated options
+                    // If the dropdown is not selected, or if current selection is not in result data,
+                    // clear selection and repopulate dropdown with updated options
                     $("#customer-dropdown").html("<option value='' selected>Select Customer...</option>");
                     for (var i = 0; i < customerData.length; i++) {
                         var customer = customerData[i];
@@ -111,7 +112,8 @@ $(document).ready(function() {
 
                 // Populate the jobs dropdown
                 if (!jobVal) { 
-                    // If the dropdown is not selected, clear it and repopulate it with updated options
+                // If the dropdown is not selected, or if current selection is not in result data,
+                // clear selection and repopulate dropdown with updated options
                     $("#job-dropdown").html("<option value='' selected>Select Job...</option>");
                     for (var i = 0; i < jobData.length; i++) {
                         var job = jobData[i];
@@ -121,7 +123,8 @@ $(document).ready(function() {
 
                 // Populate the locations dropdown
                 if (!locationVal) { 
-                    // If the dropdown is not selected, clear it and repopulate it with updated options
+                // If the dropdown is not selected, or if current selection is not in result data,
+                // clear selection and repopulate dropdown with updated options
                     $("#location-dropdown").html("<option value='' selected>Select Location...</option>");
                     for (var i = 0; i < locationData.length; i++) {
                         var location = locationData[i];
@@ -185,7 +188,8 @@ $(document).ready(function() {
         var lineItem = $(this).closest(".line-item.container");
         var positionVal = lineItem.find(".position-dropdown").val();
         var uomVal = lineItem.find(".labour-uom").val();
-        if (positionVal, uomVal) {
+
+        if (positionVal && uomVal) {
             $.ajax({
                 url: "assets/handler.php",
                 type: "POST",
@@ -239,24 +243,21 @@ $(document).ready(function() {
                     var fixedRate = parseFloat(regularRate);
                     if (!isNaN(fixedRate)) {
                         subtotal += fixedRate;
-                }
-            } else if (uom== "Hourly") {
-                var regularTotal = (parseFloat(regularRate).toFixed(2) * parseFloat(regularHours).toFixed(2));
-                var overtimeTotal = (parseFloat(overtimeRate).toFixed(2) * parseFloat(overtimeHours).toFixed(2));
-                if (!isNaN(regularTotal)) {
-                    subtotal += regularTotal;
-                }
-                if (!isNaN(overtimeTotal)) {
-                    subtotal += overtimeTotal;
+                    }
+                } else if (uom== "Hourly") {
+                    var regularTotal = (parseFloat(regularRate).toFixed(2) * parseFloat(regularHours).toFixed(2));
+                    var overtimeTotal = (parseFloat(overtimeRate).toFixed(2) * parseFloat(overtimeHours).toFixed(2));
+                    if (!isNaN(regularTotal)) {
+                        subtotal += regularTotal;
+                    }
+                    if (!isNaN(overtimeTotal)) {
+                        subtotal += overtimeTotal;
+                    }
                 }
             }
 
-            if (!isNaN(subtotal) || subtotal == 0.00) {
-                // Set the subtotal
+            if (!isNaN(subtotal.toFixed(2))) {
                 $("#labour-subtotal").val(subtotal.toFixed(2));
-            } else {
-                $("#labour-subtotal").val("");
-            }
             }
         });
     }
@@ -275,10 +276,11 @@ $(document).ready(function() {
      * Removes the labour line item and recalculates the labour subtotal.
      */ 
     $(document).on("click", "#labour .remove-line-item", function() {
+        console.log
         if ($("#labour .line-item.container").length > 1) { // Ensure at least one line item remains
             $(this).closest("#labour .line-item.container").remove();
-            calculateLabourTotal(); // Recalculate total after removal
         }
+        calculateLabourTotal(); // Recalculate total after removal
     });
 
 
@@ -342,12 +344,8 @@ $(document).ready(function() {
                 subtotal += value;
             }
         });
-        if (subtotal.toFixed(2) == 0.00) {
-            // Clear the subtotal if it's 0
-            $("#truck-subtotal").val("") 
-        }
-        else {
-            // Set the subtotal
+
+        if (!isNaN(subtotal.toFixed(2))) {
             $("#truck-subtotal").val(subtotal.toFixed(2));
         }
     }
@@ -367,8 +365,8 @@ $(document).ready(function() {
     $(document).on("click", "#truck .remove-line-item", function() {
         if ($("#truck .line-item.container").length > 1) { // Ensure at least one line item remains
             $(this).closest("#truck .line-item.container").remove();
-            calculateTruckSubtotal(); // Recalculate subtotal after removal
         }
+        calculateTruckSubtotal(); // Recalculate subtotal after removal
     });
 
     /***** MISCELLANEOUS *****/ 
@@ -399,12 +397,8 @@ $(document).ready(function() {
                 subtotal += value;
             }
         });
-        if (subtotal.toFixed(2) == 0) {
-            // Clear the subtotal if it's 0
-            $("#misc-subtotal").val("") 
-        }
-        else {
-            // Set the subtotal
+        
+        if (!isNaN(subtotal.toFixed(2))) {
             $("#misc-subtotal").val(subtotal.toFixed(2));
         }
     }
@@ -424,16 +418,43 @@ $(document).ready(function() {
     $(document).on("click", "#misc .remove-line-item", function() {
         if ($("#misc .line-item.container").length > 1) { // Ensure at least one line item remains
             $(this).closest("#misc .line-item.container").remove();
-            calculateMiscSubtotal(); // Recalculate subtotal after removal
         }
+        calculateMiscSubtotal(); // Recalculate subtotal after removal
     });
 
     /***** FORM SUBMIT *****/
+    /**
+     * Prevents the form from submitting when the enter key is pressed.
+     */
+    $(document).on("keydown", "input, select", function(e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    /**
+     * Validates the form data before submission.
+     */
+    function validateForm() {
+        var isValid = false;
+        var descriptionOfWork = tinymce.get('tinymce').getContent();
+        if (descriptionOfWork.trim() === "") {
+            alert("Please enter a description of work.");
+            $("html, body").animate({
+                scrollTop: $("#tinymce").offset().top
+            }, 500);
+            return isValid;
+        }
+    }
+
+
     /**
      * Submits the form data to the database.
      */
     $(document).on("submit", "#ticket-form", function(e) {
         e.preventDefault();
+        if (!validateForm()) return;
 
         /** PROJECT DATA */
         var projectData = {
@@ -556,5 +577,13 @@ $(document).ready(function() {
                 console.error("AJAX request failed: ", jqXHR, textStatus, errorThrown);
             }
         });
+    });
+
+    /***** Other Utilities *****/
+    /**
+     * Only permits numeric (0-9), "-", and "." from being typed into an input field.
+     */
+    $(document).on("input", ".numeric", function() {
+        this.value = this.value.replace(/[^0-9.-]/g, '');
     });
 });

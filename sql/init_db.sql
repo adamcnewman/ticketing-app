@@ -148,7 +148,6 @@ CREATE TABLE IF NOT EXISTS `labour_item` (
     `regular_hours` DECIMAL(10,2) UNSIGNED,
     `overtime_rate` DECIMAL(10,2) UNSIGNED,
     `overtime_hours` DECIMAL(10,2) UNSIGNED,
-    `total` DECIMAL(10,2) UNSIGNED,
     PRIMARY KEY (`labour_item_id`),
     FOREIGN KEY (`ticket_id`) REFERENCES `ticket`(`ticket_id`),
     FOREIGN KEY (`position_id`) REFERENCES `position`(`position_id`)

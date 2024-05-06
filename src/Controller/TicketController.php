@@ -20,11 +20,6 @@ class TicketController {
                 $truckLineItems, 
                 $miscLineItems
             );
-            // var_dump($descriptionOfWork);
-            // var_dump($projectData);
-            // var_dump($labourLineItems);
-            // var_dump($truckLineItems);
-            // var_dump($miscLineItems);
         } catch (Exception $e) {
             throw ($e);
         }

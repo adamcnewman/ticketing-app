@@ -33,7 +33,9 @@
         // Miscellaneous Section
         include __DIR__ . "/../src/View/MiscView.php" ;
         ?>
-        <button type="submit">Finish</button>
+        <div class="submit-button container">
+            <button type="submit">FINISH</button>
+        </div>
     </form>
 </body>
 </html>

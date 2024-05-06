@@ -4,7 +4,7 @@
         <div class="line-items container"></div>
         <div class="subtotal container">
             <label for="labour-subtotal">Sub-Total</label>
-            <input type="text" id="labour-subtotal" name="labour-subtotal" readonly/>
+            <input type="text" id="labour-subtotal" name="labour-subtotal" value="0.00" readonly/>
         </div>
     </div>
 </div>

@@ -16,7 +16,12 @@
         ],
         toolbar: 'undo redo | blocks | bold italic backcolor | ' +
           'alignleft aligncenter alignright alignjustify | ' +
-          'bullist numlist outdent indent | removeformat | help'
+          'bullist numlist outdent indent | removeformat | help',
+        setup: function (editor) {
+          editor.on('change', function () {
+            tinymce.triggerSave();
+          });
+        }
       });
     </script>
     </div>
