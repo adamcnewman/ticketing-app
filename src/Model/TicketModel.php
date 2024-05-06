@@ -34,6 +34,9 @@ class TicketModel {
             if ($stmt) {
                 $stmt->bind_param("s", $descriptionOfWork);
                 $success = $stmt->execute();
+                if (!$success) {
+                    throw new Exception("Query failed: " . $stmt->error);
+                }
                 $ticketID = $stmt->insert_id;
                 $stmt->close();
             }
@@ -44,7 +47,7 @@ class TicketModel {
     }
 
     /**
-     * Creates a new project entry in the database
+     * Creates a new project entry in the database.
      */
     private function insertProjectEntry($projectData) {
         try {
@@ -71,6 +74,9 @@ class TicketModel {
                     $projectData["date"]
                 );
                 $success = $stmt->execute();
+                if (!$success) {
+                    throw new Exception("Query failed: " . $stmt->error);
+                }
                 $stmt->close();
             }
         } catch (Exception $e) {
@@ -79,91 +85,114 @@ class TicketModel {
     }
 
     /**
-     * Batch inserts labour line items into the database
+     * Batch inserts labour line items into the database.
+     * If no labour line items were sent, then $labourLineItems will be an array with a single key "empty" set to true.
      */
     private function insertLabourLineItems($labourLineItems) {
-        if (is_array($labourLineItems) && !(isset($labourLineItems["empty"]) && $labourLineItems["empty"] === true)) {
-            foreach ($labourLineItems as $labourLineItem) {
-                $query = 
-                    "INSERT INTO 
-                        labour_item (ticket_id, position_id, uom, regular_rate, regular_hours, overtime_rate, overtime_hours) 
-                    VALUES 
-                        (?, ?, ?, ?, ?, ?, ?)";
+        try {
+            if (is_array($labourLineItems) && !(isset($labourLineItems["empty"]) && $labourLineItems["empty"] === true)) {
+                foreach ($labourLineItems as $labourLineItem) {
+                    $query = 
+                        "INSERT INTO 
+                            labour_item (ticket_id, position_id, uom, regular_rate, regular_hours, overtime_rate, overtime_hours) 
+                        VALUES 
+                            (?, ?, ?, ?, ?, ?, ?)";
 
-                $stmt = $this->db->prepare($query);
-                if ($stmt) {
-                    $stmt->bind_param("iisdddd", 
-                        $this->ticketID,
-                        $labourLineItem["positionID"], 
-                        $labourLineItem["uom"], 
-                        $labourLineItem["regularRate"], 
-                        $labourLineItem["regularHours"], 
-                        $labourLineItem["overtimeRate"], 
-                        $labourLineItem["overtimeHours"]
-                    );
-                    $success = $stmt->execute();
-                    
-                    $stmt->close();
+                    $stmt = $this->db->prepare($query);
+                    if ($stmt) {
+                        $stmt->bind_param("iisdddd", 
+                            $this->ticketID,
+                            $labourLineItem["positionID"], 
+                            $labourLineItem["uom"], 
+                            $labourLineItem["regularRate"], 
+                            $labourLineItem["regularHours"], 
+                            $labourLineItem["overtimeRate"], 
+                            $labourLineItem["overtimeHours"]
+                        );
+                        $success = $stmt->execute();
+                        if (!$success) {
+                            throw new Exception("Query failed: " . $stmt->error);
+                        }
+                        $stmt->close();
+                    }
                 }
             }
+        } catch (Exception $e) {
+            throw "Error (insertLabourLineItems): " . $e->getMessage();
         }
     }
 
     /**
-     * Batch inserts truck line items into the database
+     * Batch inserts truck line items into the database.
+     * If no truck line items were sent, then $truckLineItems will be an array with a single key "empty" set to true.
      */
     private function insertTruckLineItems($truckLineItems) {
-        if (is_array($truckLineItems) && !(isset($truckLineItems["empty"]) && $truckLineItems["empty"] === true)) {
-            foreach ($truckLineItems as $truckLineItem) {
-                $query = 
-                    "INSERT INTO 
-                        truck_item (ticket_id, truck_id, quantity, uom, rate, total) 
-                    VALUES 
-                        (?, ?, ?, ?, ?, ?)";
+        try {
+            if (is_array($truckLineItems) && !(isset($truckLineItems["empty"]) && $truckLineItems["empty"] === true)) {
+                foreach ($truckLineItems as $truckLineItem) {
+                    $query = 
+                        "INSERT INTO 
+                            truck_item (ticket_id, truck_id, quantity, uom, rate, total) 
+                        VALUES 
+                            (?, ?, ?, ?, ?, ?)";
 
-                $stmt = $this->db->prepare($query);
-                if ($stmt) {
-                    $stmt->bind_param("iiisdd", 
-                        $this->ticketID,
-                        $truckLineItem["truckID"], 
-                        $truckLineItem["quantity"], 
-                        $truckLineItem["uom"], 
-                        $truckLineItem["rate"], 
-                        $truckLineItem["total"]
-                    );
-                    $success = $stmt->execute();
-                    $stmt->close();
+                    $stmt = $this->db->prepare($query);
+                    if ($stmt) {
+                        $stmt->bind_param("iiisdd", 
+                            $this->ticketID,
+                            $truckLineItem["truckID"], 
+                            $truckLineItem["quantity"], 
+                            $truckLineItem["uom"], 
+                            $truckLineItem["rate"], 
+                            $truckLineItem["total"]
+                        );
+                        $success = $stmt->execute();
+                        if (!$success) {
+                            throw new Exception("Query failed: " . $stmt->error);
+                        }
+                        $stmt->close();
+                    }
                 }
-            }
+        }
+        } catch (Exception $e) {
+            throw "Error (insertTruckLineItems): " . $e->getMessage();
         }
     }
 
     /**
-     * Batch inserts miscellaneous line items into the database
+     * Batch inserts miscellaneous line items into the database.
+     * If no miscellaneous line items were sent, then $miscLineItems will be an array with a single key "empty" set to true.
      */
     private function insertMiscLineItems($miscLineItems) {
-        if (is_array($miscLineItems) && !(isset($miscLineItems["empty"]) && $miscLineItems["empty"] === true)) {
-            foreach ($miscLineItems as $miscLineItem) {
-                $query = 
-                    "INSERT INTO 
-                        misc_item (ticket_id, misc_description, cost, price, quantity, total) 
-                    VALUES 
-                        (?, ?, ?, ?, ?, ?)";
+        try { 
+            if (is_array($miscLineItems) && !(isset($miscLineItems["empty"]) && $miscLineItems["empty"] === true)) {
+                foreach ($miscLineItems as $miscLineItem) {
+                    $query = 
+                        "INSERT INTO 
+                            misc_item (ticket_id, misc_description, cost, price, quantity, total) 
+                        VALUES 
+                            (?, ?, ?, ?, ?, ?)";
 
-                $stmt = $this->db->prepare($query);
-                if ($stmt) {
-                    $stmt->bind_param("isdddd", 
-                        $this->ticketID,
-                        $miscLineItem["description"], 
-                        $miscLineItem["cost"], 
-                        $miscLineItem["price"], 
-                        $miscLineItem["quantity"], 
-                        $miscLineItem["total"]
-                    );
-                    $success = $stmt->execute();
-                    $stmt->close();
+                    $stmt = $this->db->prepare($query);
+                    if ($stmt) {
+                        $stmt->bind_param("isdddd", 
+                            $this->ticketID,
+                            $miscLineItem["description"], 
+                            $miscLineItem["cost"], 
+                            $miscLineItem["price"], 
+                            $miscLineItem["quantity"], 
+                            $miscLineItem["total"]
+                        );
+                        $success = $stmt->execute();
+                        if (!$success) {
+                            throw new Exception("Query failed: " . $stmt->error);
+                        }
+                        $stmt->close();
+                    }
                 }
             }
+        } catch (Exception $e) {
+            throw "Error (insertMiscLineItems): " . $e->getMessage();
         }
     }
 
@@ -196,7 +225,7 @@ class TicketModel {
             $this->db->commit();
         } catch (Exception $e) {
             $this->db->rollback();
-            throw $e;
+            throw "Error (createTicket)" . $e;
         }
     }
 }

@@ -19,6 +19,9 @@ class Database {
         }
     }
 
+    /**
+     * Returns the singleton instance of the database connection.
+     */
     public static function getConnection() {
         if (self::$db_connection === null) {
             self::$db_connection = new Database();

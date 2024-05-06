@@ -12,19 +12,42 @@ class LabourController {
         $this->labourModel = new LabourModel();
     }
 
+    /**
+     * Initializes the labour data for the page.
+     */
     public function initLabourData() {
-        $staffData = $this->labourModel->getStaffData();
-        return $staffData;
+        try {
+            $staffData = $this->labourModel->getStaffData();
+            return $staffData;
+        } catch (Exception $e) {
+            throw ($e);
+        }
     }
 
+    /**
+     * Gets the positions from a staff ID.
+     */
     public function getPositionsFromStaffID($staff_id) {
-        $positions = $this->labourModel->getPositionsFromStaffID($staff_id);
-        return $positions;
+        try {
+
+            $positions = $this->labourModel->getPositionsFromStaffID($staff_id);
+            return $positions;
+        } catch (Exception $e) {
+            throw ($e);
+        }
     }
 
+    /**
+     * Gets the position rates given a position ID and unit of measure.
+     */
     public function getPositionRates($position_id, $uom) {
-        $rates = $this->labourModel->getPositionRates($position_id, $uom);
-        return $rates;
+        try {
+
+            $rates = $this->labourModel->getPositionRates($position_id, $uom);
+            return $rates;
+        } catch (Exception $e) {
+            throw ($e);
+        }
     }
 }
 ?>

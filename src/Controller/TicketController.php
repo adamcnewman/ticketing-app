@@ -14,7 +14,7 @@ class TicketController {
     }
 
     /**
-     * Creates a new ticket entry in the database
+     * Creates a new ticket entry in the database.
      */
     public function createTicket($descriptionOfWork, $projectData, $labourLineItems, $truckLineItems, $miscLineItems) {
         try {

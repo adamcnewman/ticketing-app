@@ -27,12 +27,12 @@ try {
         );
         unset($ticketController);
         echo "Success";
-    } catch (Exception $e) {
-        throw $e;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    } else {
+        throw new Exception("Could not submit ticket - missing required fields.");
     }
-} else {
-    throw new Exception("Could not submit ticket - missing required fields.");
-}
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(["error" => $e->getMessage()]);

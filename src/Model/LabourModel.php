@@ -13,29 +13,43 @@ class LabourModel {
         $this->db = Database::getConnection();
     }
 
+    /**
+     * Gets the staff data from the database.
+     */
     public function getStaffData() {
-        $staffData = [];
-        $query = 
+        try {
+            $staffData = [];
+            $query = 
             "SELECT 
                 staff_id, name 
             FROM 
                 staff
             ";
-        $stmt = $this->db->prepare($query);
-        if ($stmt) {
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                $staffData[] = $row;
+            $stmt = $this->db->prepare($query);
+            if ($stmt) {
+                $success = $stmt->execute();
+                if (!$success) {
+                    throw new Exception("Query failed: " . $stmt->error);
+                }
+                $result = $stmt->get_result();
+                while ($row = $result->fetch_assoc()) {
+                    $staffData[] = $row;
+                }
+                $stmt->close();
             }
-            $stmt->close();
+            return $staffData;
+        } catch (Exception $e) {
+            throw "Error (getStaffData)" . $e;
         }
-        return $staffData;
     }
 
+    /**
+     * Gets the positions from a staff ID.
+     */
     public function getPositionsFromStaffID($staff_id) {
-        $positions = [];
-        $query = 
+        try {
+            $positions = [];
+            $query = 
             "SELECT 
                 position_id, title 
             FROM 
@@ -43,23 +57,32 @@ class LabourModel {
             WHERE 
                 staff_id = ?
             ";
-        $stmt = $this->db->prepare($query);
-        $staff_id = intval($staff_id);
-        if ($stmt) {
-            $stmt->bind_param("i", $staff_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                $positions[] = $row;
+            $stmt = $this->db->prepare($query);
+            $staff_id = intval($staff_id);
+            if ($stmt) {
+                $stmt->bind_param("i", $staff_id);
+                if (!$success) {
+                    throw new Exception("Query failed: " . $stmt->error);
+                }
+                $result = $stmt->get_result();
+                while ($row = $result->fetch_assoc()) {
+                    $positions[] = $row;
+                }
+                $stmt->close();
             }
-            $stmt->close();
+            return $positions;
+        } catch (Exception $e) {
+            throw "Error (getPositionsFromStaffID)" . $e;
         }
-        return $positions;
     }
 
+    /**
+     * Gets the position rates given a position ID and unit of measure.
+     */
     public function getPositionRates($position_id, $uom) {
-        $rates = [];
-        $query = 
+        try {
+            $rates = [];
+            $query = 
             "SELECT 
                 regular_rate, overtime_rate 
             FROM 
@@ -67,17 +90,22 @@ class LabourModel {
             WHERE 
                 position_id = ? AND uom = ?
             ";
-        $stmt = $this->db->prepare($query);
-        $position_id = intval($position_id);
-        if ($stmt) {
-            $stmt->bind_param("is", $position_id, $uom);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                $rates[] = $row;
+            $stmt = $this->db->prepare($query);
+            $position_id = intval($position_id);
+            if ($stmt) {
+                $stmt->bind_param("is", $position_id, $uom);
+                if (!$success) {
+                    throw new Exception("Query failed: " . $stmt->error);
+                }
+                $result = $stmt->get_result();
+                while ($row = $result->fetch_assoc()) {
+                    $rates[] = $row;
+                }
+                $stmt->close();
             }
-            $stmt->close();
+            return $rates;
+        } catch (Exception $e) {
+            throw "Error (getPositionRates)" . $e;
         }
-        return $rates;
     }
 }

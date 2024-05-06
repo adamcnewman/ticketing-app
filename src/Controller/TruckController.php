@@ -13,14 +13,28 @@ class TruckController {
         $this->truckModel = new TruckModel();
     }
 
+    /**
+     * Initializes the truck data for the page.
+     */
     public function initTruckData() {
-        $trucks = $this->truckModel->getTrucks();
-        return $trucks;
+        try {
+            $trucks = $this->truckModel->getTrucks();
+            return $trucks;
+        } catch (Exception $e) {
+            throw ($e);
+        }
     }
 
+    /**
+     * Gets the truck rate from the truck ID and unit of measure.
+     */
     public function getTruckRateFromID($truck_id, $uom) { 
-        $truck_rate = $this->truckModel->getTruckRateFromId($truck_id, $uom);
-        return $truck_rate;
+        try {
+            $truck_rate = $this->truckModel->getTruckRateFromId($truck_id, $uom);
+            return $truck_rate;
+        } catch (Exception $e) {
+            throw ($e);
+        }
     }
 }
 ?>
