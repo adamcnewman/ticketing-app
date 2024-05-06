@@ -66,7 +66,7 @@ TicketingApp\
 │   │   └── TruckView.php `Truck section.`\
 ├── .gitignore\
 ├── .htaccess\
-└── README.md\
+└── README.md
 
 
 ### Running the Program
